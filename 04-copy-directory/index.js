@@ -14,12 +14,6 @@ fs.access(pathToCopyFolder, (error) => {
   }
 });
 
-function createCopyFile(pathWhere, content) {
-  fs.writeFile(pathWhere, content, (error) => {
-    if (error) throw error;
-  });
-}
-
 async function copyDir(fromPath, toPath) {
   await fsPromises.rm(toPath, { force: true, recursive: true });
   await fsPromises.mkdir(toPath, { recursive: true });
@@ -34,16 +28,9 @@ async function copyDir(fromPath, toPath) {
       await fsPromises.mkdir(copyItemPath, { recursive: true });
       await copyDir(currentItemPath, copyItemPath);
     } else if (item.isFile()) {
-      const rs = fs.createReadStream(currentItemPath);
-
-      let data = '';
-      rs.on('data', chunk => data += chunk);
-      rs.on('end', () => createCopyFile(copyItemPath, data));
-      rs.on('error', err => console.log('Erroооr: ', err.message));
+      await fsPromises.copyFile(currentItemPath, copyItemPath);
     }
   }
 }
 
 copyDir(pathFromCopyFolder, pathToCopyFolder);
-
-
