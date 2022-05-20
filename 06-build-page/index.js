@@ -63,26 +63,19 @@ async function copyDir(fromPath, toPath) {
 }
 
 async function pasteComponents() {
-  const rs = fs.createReadStream(pathTemplateHtml);
+  let htmlBase = await fsPromises.readFile(pathTemplateHtml, 'utf-8');
+  const filesNameArr = await fsPromises.readdir(pathComponents, { withFileTypes: true });
 
-  let data = '';
-  rs.on('data', chunk => data += chunk);
-  rs.on('end', () => {
-    let templates = data.match(/{{[A-z]*}}/g);
+  for (let item of filesNameArr) {
+    const componentContent = await fsPromises.readFile(path.join(pathComponents, `${item.name}`), 'utf-8');
+    const regExp = new RegExp(`{{${(item.name).split('.')[0]}}}`, 'g');
+    htmlBase = htmlBase.replace(regExp, componentContent);
+  }
 
-    templates.forEach(item => {
-      let template = item.replace(/([^A-z]*)/g, '');
-
-      fsPromises.readFile(path.join(pathComponents, `${template}.html`), 'utf-8')
-        .then(componentContent => {
-          data = data.replace(item, componentContent);
-          createFile(pathNewHtml, data);
-        });
-    });
-  });
+  createFile(pathNewHtml, htmlBase);
 }
 
-function buildPage() {
+async function buildPage() {
   createFolder(pathCreateFolder);
   mergeFiles();
   copyDir(pathAssets, pathNewAssets);
