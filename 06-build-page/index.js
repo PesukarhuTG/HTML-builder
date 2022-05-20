@@ -13,7 +13,7 @@ const pathAssets = path.join(__dirname, 'assets');
 const pathCss = path.join(__dirname, 'styles');
 const pathTemplateHtml = path.join(__dirname, 'template.html');
 
-function createFolder(inputPath) {
+async function createFolder(inputPath) {
   fs.access(pathCreateFolder, (error) => {
     if (error) {
       fsPromises.mkdir(inputPath);
@@ -73,11 +73,11 @@ async function pasteComponents() {
     templates.forEach(item => {
       let template = item.replace(/([^A-z]*)/g, '');
 
-      (async () => {
-        const componentContent = await fsPromises.readFile(path.join(pathComponents, `${template}.html`), 'utf-8');
-        data = data.replace(item, componentContent);
-        createFile(pathNewHtml, data);
-      })();
+      fsPromises.readFile(path.join(pathComponents, `${template}.html`), 'utf-8')
+        .then(componentContent => {
+          data = data.replace(item, componentContent);
+          createFile(pathNewHtml, data);
+        });
     });
   });
 }
@@ -90,4 +90,3 @@ function buildPage() {
 }
 
 buildPage();
-
