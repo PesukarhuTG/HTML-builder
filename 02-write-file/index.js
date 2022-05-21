@@ -11,7 +11,7 @@ const writableStream = fs.createWriteStream(path.join(__dirname, 'text.txt'));
 rl.write('Введите ваш текст, пожалуйста!\n');
 
 rl.on('line', (text) => {
-  if (text === 'exit') rl.close();
+  if (text.trim() === 'exit') rl.close();
 
   writableStream.write(`${text}\n`, error => {
     if (error) throw error;
