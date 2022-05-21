@@ -14,7 +14,7 @@ let arrOfStyles = [];
 
     if (fileType === '.css') {
       const cssContent = await fsPromises.readFile(pathToCurrentFile, 'utf8');
-      arrOfStyles.push(cssContent);
+      arrOfStyles.push(`${cssContent}\n`);
     }
   }
 
