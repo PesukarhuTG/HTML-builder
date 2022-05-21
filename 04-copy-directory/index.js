@@ -1,5 +1,5 @@
 const fs = require('fs');
-const fsPromises = require('fs/promises');
+const fsPromises = fs.promises;
 const path = require('path');
 
 const pathFromCopyFolder = path.join(__dirname, 'files');
