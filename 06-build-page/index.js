@@ -1,5 +1,5 @@
 const fs = require('fs');
-const fsPromises = require('fs/promises');
+const fsPromises = fs.promises;
 const path = require('path');
 
 const pathCreateFolder = path.join(__dirname, 'project-dist');
@@ -35,7 +35,7 @@ async function mergeFiles() {
 
     if (fileType === '.css') {
       const cssContent = await fsPromises.readFile(pathToCurrentFile, 'utf8');
-      arrOfStyles.push(cssContent);
+      arrOfStyles.push(`${cssContent}\n\n`);
     }
   }
 
